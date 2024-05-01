@@ -96,4 +96,20 @@ def save_binary(file_path: Path, data: Any):
     """
     joblib.dump(data, file_path)
     logger.info(f'binary file {file_path} saved successfully')
+
+
+@ensure_annotations
+def get_size(file_path: Path) -> str:
+    """ get the size of the file in KB
+
+    Args:
+        file_path (Path): Path of the file
+
+    Returns:
+        str: size in KB
+    """
+
+    size_in_KB = round(os.path.getsize(file_path) / 1024)
+    return f"~ {size_in_KB} KB"
+
     
