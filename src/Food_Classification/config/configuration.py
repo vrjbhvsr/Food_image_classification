@@ -1,6 +1,6 @@
 from Food_Classification.constants import *
 from Food_Classification.utils.common import read_yaml,create_directory
-from Food_Classification.entity.config_entity import DataIngestionConfig
+from Food_Classification.entity.config_entity import DataIngestionConfig, PrepareBasemodelConfig
 
 class ConfigurationManager:
     def __init__(self,
@@ -24,4 +24,21 @@ class ConfigurationManager:
                 unzip_dir=config.unzip_dir)
             
             return data_ingestion_config
+
+    def get_base_model_config(self) -> PrepareBasemodelConfig:
+        config = self.config.prepare_base_model
+        params = self.params
+
+        create_directory([config.root_dir])
+
+        prepare_base_model_cofig = PrepareBasemodelConfig(
+                                                        root_dir= Path(config.root_dir),
+                                                        base_model_dir= Path(config.base_model_path),
+                                                        updated_base_model= Path(config.updated_base_model),
+                                                        params_image_size=  params.IMAGE_SIZE,
+                                                        params_device= params.DEVICE,
+                                                        params_weight= params.WEIGHTS,
+                                                        params_classes= params.CLASSES)
+        
+        return prepare_base_model_cofig
         
