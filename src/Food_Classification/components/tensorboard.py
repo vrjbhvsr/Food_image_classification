@@ -1,7 +1,7 @@
 from torch.utils.tensorboard import SummaryWriter
 import os
 from datetime import datetime
-from Food_Classification.config.configuration import get_tensorboard_config
+from Food_Classification.entity.config_entity import preparetensorboardconfig
 
 class preparetensorboard:
     def __init__(self, config: preparetensorboardconfig):

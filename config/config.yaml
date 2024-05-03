@@ -18,3 +18,16 @@ prepare_base_model:
 prepare_tensorboard:
   root_dir: artifacts/prepare_tensorboard
   tensorboard_root_log_dir: artifacts/prepare_tensorboard/tensorboard_log_dir
+
+
+data_transforms:
+  root_dir: artifacts/data_transforms
+  train_transforms_pkl: artifacts/data_transforms/train_transforms.pkl
+  test_transforms_pkl: artifacts/data_transforms/test_transforms.pkl
+  train_dir: artifacts/data_ingestion/food_40_percent/train
+  test_dir: artifacts/data_ingestion/food_40_percent/test
+
+
+training:
+  root_dir: artifacts/training
+  trained_model_path: artifacts/training/model.pth
