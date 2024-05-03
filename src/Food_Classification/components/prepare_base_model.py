@@ -29,7 +29,7 @@ class PrepareBaseModel:
         col_names=['input_size', 'output_size', 'num_params', "trainable"],
         col_width=20,
         row_settings=["var_names"])
-        return model, info
+        return model
 
     def update_base_model(self):
         self.model = self.preparebasemodel(model= self.base_model, 

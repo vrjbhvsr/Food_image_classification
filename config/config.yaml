@@ -13,3 +13,8 @@ prepare_base_model:
   root_dir: artifacts/prepare_base_model
   base_model_path: artifacts/prepare_base_model/base_model.pth
   updated_base_model: artifacts/prepare_base_model/base_model_updated.pth
+
+
+prepare_tensorboard:
+  root_dir: artifacts/prepare_tensorboard
+  tensorboard_root_log_dir: artifacts/prepare_tensorboard/tensorboard_log_dir

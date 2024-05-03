@@ -18,3 +18,12 @@ class PrepareBasemodelConfig:
     params_device: str
     params_weight: str
     params_classes: int
+
+
+@dataclass(frozen =True)
+class preparetensorboardconfig:
+    root_dir: Path
+    tensorboard_root_log_dir: Path
+    experiment_name: str
+    model_name:str
+    epochs: int

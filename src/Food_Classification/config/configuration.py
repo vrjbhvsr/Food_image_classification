@@ -1,6 +1,6 @@
 from Food_Classification.constants import *
 from Food_Classification.utils.common import read_yaml,create_directory
-from Food_Classification.entity.config_entity import DataIngestionConfig, PrepareBasemodelConfig
+from Food_Classification.entity.config_entity import DataIngestionConfig, PrepareBasemodelConfig, preparetensorboardconfig
 
 class ConfigurationManager:
     def __init__(self,
@@ -41,4 +41,19 @@ class ConfigurationManager:
                                                         params_classes= params.CLASSES)
         
         return prepare_base_model_cofig
+    
+
+    def get_tensorboard_config(self) -> preparetensorboardconfig:
+
+            config = self.config.prepare_tensorboard
+            create_directory([config.tensorboard_root_log_dir])
+
+            prepare_tensorboard_config = preparetensorboardconfig(root_dir = config.root_dir,
+                                                            tensorboard_root_log_dir = config.tensorboard_root_log_dir,
+                                                            experiment_name = self.params.EXPERIMENT_NAME,
+                                                            model_name = self.params.MODEL_NAME,
+                                                            epochs = self.params.EPOCHS
+                                                            )
+            
+            return prepare_tensorboard_config
         
