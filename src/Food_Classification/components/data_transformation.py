@@ -5,7 +5,7 @@ from torch.utils.data import DataLoader, Dataset
 from torchvision.datasets import ImageFolder
 from torchvision.transforms import transforms
 from Food_Classification import logger
-#from Food_Classification.config.configuration import ConfigurationManager
+from Food_Classification.entity.config_entity import data_transformation_config
 
 class data_transformation:
     def __init__(self, config: data_transformation_config):
