@@ -1,6 +1,6 @@
 from Food_Classification.constants import *
 from Food_Classification.utils.common import read_yaml,create_directory
-from Food_Classification.entity.config_entity import DataIngestionConfig, PrepareBasemodelConfig, preparetensorboardconfig
+from Food_Classification.entity.config_entity import DataIngestionConfig, PrepareBasemodelConfig, preparetensorboardconfig, data_transformation_config
 
 class ConfigurationManager:
     def __init__(self,
@@ -57,3 +57,34 @@ class ConfigurationManager:
             
             return prepare_tensorboard_config
         
+
+
+    def get_data_transform_config(self) -> data_transformation_config:
+        config = self.config.data_transforms
+
+        train_dir = os.path.join(self.config.data_ingestion.unzip_dir,'food_40_percent','train')
+        test_dir = os.path.join(self.config.data_ingestion.unzip_dir,'food_40_percent','test')
+        create_directory([config.root_dir,config.transforms_pkl])
+        data_transformation_configuration = data_transformation_config(root_dir= config.root_dir,
+                                                        train_dir= Path(train_dir),
+                                                        test_dir= Path(test_dir),
+                                                        transforms_pkl = config.transforms_pkl,
+                                                        batch_size= self.params.BATCH_SIZE,
+                                                        shuffle= self.params.SHUFFLE,
+                                                        color_transform ={'brightness': BRIGHTNESS,
+                                                                                'contrast': CONTRAST,
+                                                                                'saturation': SATURATION,
+                                                                                'hue': HUE},
+                                                        spatial_transform= {'vertical_flip': VERTICLE_FLIP,
+                                                                            'resize': RESIZE,
+                                                                            'center_crop': CENTER_CROP,
+                                                                            'rotation': RANDOMROTATION
+                                                                            },
+                                                        normalize_transform= {'mean': NORMALIZE_MEAN,
+                                                                                'std': NORMALIZE_STD},
+                                                        data_loader_params= {"num_workers": NUM_WORKERS,
+                                                                                "pin_memory": PIN_MEMORY})
+        
+        return data_transformation_configuration
+    
+

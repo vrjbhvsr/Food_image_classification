@@ -27,3 +27,19 @@ class preparetensorboardconfig:
     experiment_name: str
     model_name:str
     epochs: int
+
+
+
+@dataclass
+class data_transformation_config:
+    root_dir: Path
+    transforms_pkl: Path
+    train_dir: Path
+    test_dir: Path
+    batch_size: int
+    shuffle: bool
+    color_transform: dict
+    spatial_transform: dict
+    normalize_transform: dict
+    data_loader_params: dict
+    

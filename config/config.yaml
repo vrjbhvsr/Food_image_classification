@@ -22,11 +22,8 @@ prepare_tensorboard:
 
 data_transforms:
   root_dir: artifacts/data_transforms
-  train_transforms_pkl: artifacts/data_transforms/train_transforms.pkl
-  test_transforms_pkl: artifacts/data_transforms/test_transforms.pkl
-  train_dir: artifacts/data_ingestion/food_40_percent/train
-  test_dir: artifacts/data_ingestion/food_40_percent/test
-
+  transforms_pkl: artifacts/data_transforms/transforms.pkl
+  
 
 training:
   root_dir: artifacts/training
