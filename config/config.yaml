@@ -22,9 +22,10 @@ prepare_tensorboard:
 
 data_transforms:
   root_dir: artifacts/data_transforms
-  transforms_pkl: artifacts/data_transforms/transforms.pkl
-  
+  train_transforms_pkl: artifacts/data_transforms/train_transforms.pkl
+  test_transforms_pkl: artifacts/data_transforms/test_transforms.pkl
 
-training:
-  root_dir: artifacts/training
-  trained_model_path: artifacts/training/model.pth
+
+model_training:
+  root_dir: artifacts/model_training
+  model_path: artifacts/model_training/model.pth

@@ -2,7 +2,6 @@ import torch
 import torchvision
 from torchinfo import summary
 from pathlib import Path
-from Food_Classification.entity.config_entity import PrepareBasemodelConfig
 
 class PrepareBaseModel:
     def __init__(self, config: PrepareBasemodelConfig):
@@ -10,7 +9,7 @@ class PrepareBaseModel:
 
     def get_base_model(self):
         self.base_model = torchvision.models.efficientnet_b4(weights=self.config.params_weight).to(self.config.params_device)
-        torch.save(self.base_model, self.config.base_model_dir)
+        torch.save(self.base_model.state_dict(), self.config.base_model_dir)
 
     @staticmethod
     def prepare_base_model(model, classes, freeze: bool):
@@ -27,15 +26,14 @@ class PrepareBaseModel:
                        col_names=['input_size', 'output_size', 'num_params', "trainable"],
                        col_width=20,
                        row_settings=["var_names"])
-        return model
+        return model, info
 
     def update_base_model(self):
-        self.model = self.prepare_base_model(model=self.base_model, 
+        self.model, _ = self.prepare_base_model(model=self.base_model, 
                                                 classes=self.config.params_classes,
                                                 freeze=True)
-        torch.save(self.model, self.config.updated_base_model)
-        return self.model
+        torch.save(self.model.state_dict(), self.config.updated_base_model)
 
     @staticmethod
     def save_model(path: Path, model: torch.nn.Module):
-        torch.save(model, path)
+        torch.save(model.state_dict(), path)

@@ -1,5 +1,5 @@
 from Food_Classification.config.configuration import ConfigurationManager
-from Food_Classification.components.prepare_base_model import PrepareBaseModel
+#from Food_Classification.components.prepare_base_model import PrepareBaseModel
 from Food_Classification import logger
 
 STAGE_NAME = "Prepare Base Model"

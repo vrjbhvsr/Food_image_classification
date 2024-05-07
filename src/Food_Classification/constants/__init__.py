@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import List
 import os
+import torch
 
 CONFIG_FILE_PATH = Path("config/config.yaml")
 PARAMS_FILE_PATH = Path("params.yaml")

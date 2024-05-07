@@ -6,6 +6,7 @@ from torchvision.datasets import ImageFolder
 from torchvision.transforms import transforms
 from Food_Classification import logger
 from Food_Classification.entity.config_entity import data_transformation_config
+#from Food_Classification.config.configuration import ConfigurationManager
 
 class data_transformation:
     def __init__(self, config: data_transformation_config):
@@ -78,19 +79,16 @@ class data_transformation:
 
             test_transform: transforms.Compose = self.test_transform()
 
-            train_transform_filename = os.path.join(self.config.transforms_pkl, "train_transforms.pkl")  # Create filename with path and extension
-            test_transform_filename = os.path.join(self.config.transforms_pkl, "test_transforms.pkl")
+            train_transform_filename = os.path.join(self.config.root_dir, "train_transforms.pkl")  # Create filename with path and extension
+            test_transform_filename = os.path.join(self.config.root_dir, "test_transforms.pkl")
 
             joblib.dump(train_transform, train_transform_filename)
             joblib.dump(test_transform, test_transform_filename)
 
 
             train_dataloader, test_dataloader, class_name = self.create_dataloaders(train_transform=train_transform, test_transform=test_transform)
-            
-            self.config.transformed_train_data = train_dataloader
-            self.config.transformed_test_data = test_dataloader
 
-            return self.config.transformed_train_data, self.config.transformed_test_data, class_name
+            return train_dataloader, test_dataloader, class_name
         
         except Exception as e:
             raise e

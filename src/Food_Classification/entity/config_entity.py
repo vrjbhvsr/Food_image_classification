@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from pathlib import Path
+import torch
 
 @dataclass(frozen=True)
 class DataIngestionConfig:
@@ -18,6 +19,7 @@ class PrepareBasemodelConfig:
     params_device: str
     params_weight: str
     params_classes: int
+    learning_rate: float
 
 
 @dataclass(frozen =True)
@@ -33,7 +35,6 @@ class preparetensorboardconfig:
 @dataclass
 class data_transformation_config:
     root_dir: Path
-    transforms_pkl: Path
     train_dir: Path
     test_dir: Path
     batch_size: int
@@ -42,4 +43,14 @@ class data_transformation_config:
     spatial_transform: dict
     normalize_transform: dict
     data_loader_params: dict
-    
+
+
+
+@dataclass
+class training_config:
+    root_dir: Path
+    model_path: Path
+    epochs: int
+    batch_size: int
+    learning_rate: float
+    device: str
