@@ -19,7 +19,7 @@ class PrepareBasemodelConfig:
     params_device: str
     params_weight: str
     params_classes: int
-    learning_rate: float
+    
 
 
 @dataclass(frozen =True)

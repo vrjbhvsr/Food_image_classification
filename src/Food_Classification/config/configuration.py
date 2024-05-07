@@ -37,8 +37,8 @@ class ConfigurationManager:
                                                         params_image_size=  params.IMAGE_SIZE,
                                                         params_device= params.DEVICE,
                                                         params_weight= params.WEIGHTS,
-                                                        params_classes= params.CLASSES,
-                                                        learning_rate = params.LEARNING_RATE)
+                                                        params_classes= params.CLASSES
+                                                        )
         
         return prepare_base_model_cofig
 
