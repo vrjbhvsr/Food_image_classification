@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import List
 import os
-import torch
+from torch import nn
 
 CONFIG_FILE_PATH = Path("config/config.yaml")
 PARAMS_FILE_PATH = Path("params.yaml")
@@ -21,3 +21,4 @@ NORMALIZE_STD:List[int] = [0.229, 0.224, 0.225]
 SHUFFLE:bool = True
 PIN_MEMORY:bool = True
 NUM_WORKERS:int = os.cpu_count()
+LOSS_FUNCTION = nn.CrossEntropyLoss

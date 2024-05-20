@@ -1,8 +1,8 @@
-from Food_Classification.components.data_transformation import data_transformation
+from Food_Classification.components.data_transformation import DataTransformation
 from Food_Classification.components.tensorboard import preparetensorboard
 from Food_Classification.components.prepare_base_model import PrepareBaseModel
 from Food_Classification.config.configuration import ConfigurationManager
-from Food_Classification.components.model_trainier import Model_training
+from Food_Classification.components.model_trainer import Model_Training
 from Food_Classification.components.data_ingestion import DataIngestion
 from Food_Classification import logger
 import torch
@@ -35,9 +35,9 @@ class TrainingPipeline:
 
     def datatransformationpipeline(self):
         try:
-            transformation_config = self.config.get_data_transform_config()
-            transform = data_transformation(config=transformation_config)
-            data_transformation_artifact = transform.initiate_data_transformation()
+            transformation_config = self.config.get_DataTransformConfig()
+            transform = DataTransformation(config=transformation_config)
+            data_transformation_artifact = transform.initiate_datatransfrom()
             return data_transformation_artifact
         except Exception as e:
             raise e
@@ -45,11 +45,9 @@ class TrainingPipeline:
 
     def trainingpipeline(self,artifact):
         try:
-            tensorboard = preparetensorboard(config=self.config.get_tensorboard_config())
-            writer = tensorboard.get_summary_writer()
             train_config = self.config.get_training_config()
-            training = Model_training(train_config, artifact=artifact, loss_function= torch.nn.CrossEntropyLoss(), optimizer= torch.optim.Adam,writer=writer)
-            training.initiate_training()
+            trainig = Model_Training(config=train_config, transformation_Artifacts=artifact)
+            trainig.initiate_Model_training()
         except Exception as e:
             raise e
 

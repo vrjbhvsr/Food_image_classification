@@ -33,16 +33,17 @@ class preparetensorboardconfig:
 
 
 @dataclass
-class data_transformation_config:
+class DataTransformConfig:
     root_dir: Path
     train_dir: Path
     test_dir: Path
-    batch_size: int
-    shuffle: bool
     color_transform: dict
     spatial_transform: dict
-    normalize_transform: dict
     data_loader_params: dict
+    normalize: dict
+    train_transforms_file: Path
+    test_transforms_file: Path
+
 
 
 
@@ -54,3 +55,16 @@ class training_config:
     batch_size: int
     learning_rate: float
     device: str
+
+
+@dataclass
+class TrainingConfig:
+    root_dir: Path
+    loss_function: torch.nn.Module
+    learning_rate: float
+    epochs: int
+    device: str
+    classes: int
+    schedular_params: dict
+    bentoml_model_name: str
+    train_transform_key: str

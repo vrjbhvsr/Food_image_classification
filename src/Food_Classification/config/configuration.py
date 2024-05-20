@@ -1,6 +1,6 @@
 from Food_Classification.constants import *
 from Food_Classification.utils.common import read_yaml,create_directory
-from Food_Classification.entity.config_entity import DataIngestionConfig, PrepareBasemodelConfig, preparetensorboardconfig, data_transformation_config, training_config
+from Food_Classification.entity.config_entity import DataIngestionConfig, PrepareBasemodelConfig, TrainingConfig, DataTransformConfig, training_config
 class ConfigurationManager:
     def __init__(self,
                  config_file_path = CONFIG_FILE_PATH,
@@ -42,65 +42,56 @@ class ConfigurationManager:
         
         return prepare_base_model_cofig
 
-    
 
-    def get_tensorboard_config(self) -> preparetensorboardconfig:
-
-            config = self.config.prepare_tensorboard
-            create_directory([config.root_dir])
-            create_directory([config.tensorboard_root_log_dir])
-
-            prepare_tensorboard_config = preparetensorboardconfig(root_dir = config.root_dir,
-                                                            tensorboard_root_log_dir = config.tensorboard_root_log_dir,
-                                                            experiment_name = self.params.EXPERIMENT_NAME,
-                                                            model_name = self.params.MODEL_NAME,
-                                                            epochs = self.params.EPOCHS
-                                                            )
-            
-            return prepare_tensorboard_config
-        
-
-
-    def get_data_transform_config(self) -> data_transformation_config:
+    def get_DataTransformConfig(self) -> DataTransformConfig:
         config = self.config.data_transforms
-
+        create_directory([config.root_dir])
         train_dir = os.path.join(self.config.data_ingestion.unzip_dir,'food_40_percent','train')
         test_dir = os.path.join(self.config.data_ingestion.unzip_dir,'food_40_percent','test')
-        create_directory([config.root_dir])
-        data_transformation_configuration = data_transformation_config(root_dir= config.root_dir,
-                                                        train_dir= Path(train_dir),
-                                                        test_dir= Path(test_dir),
-                                                        batch_size= self.params.BATCH_SIZE,
-                                                        shuffle= self.params.SHUFFLE,
-                                                        color_transform ={'brightness': BRIGHTNESS,
-                                                                                'contrast': CONTRAST,
-                                                                                'saturation': SATURATION,
-                                                                                'hue': HUE},
-                                                        spatial_transform= {'vertical_flip': VERTICLE_FLIP,
-                                                                            'resize': RESIZE,
-                                                                            'center_crop': CENTER_CROP,
-                                                                            'rotation': RANDOMROTATION
-                                                                            },
-                                                        normalize_transform= {'mean': NORMALIZE_MEAN,
-                                                                                'std': NORMALIZE_STD},
-                                                        data_loader_params= {"num_workers": NUM_WORKERS,
-                                                                                "pin_memory": PIN_MEMORY})
+        train_transformed_file = Path(config.TRAIN_TRANSFORMS_FILE)
+        test_transformed_file = Path(config.TEST_TRANSFORMS_FILE)
+
+        TransformationConfig = DataTransformConfig(root_dir= config.root_dir,
+                                                   train_dir=Path(train_dir),
+                                                   test_dir=Path(test_dir),
+                                                    train_transforms_file=train_transformed_file,
+                                                    test_transforms_file=test_transformed_file,
+                                                   color_transform={"brightness":BRIGHTNESS,
+                                                                    "contrast":CONTRAST,
+                                                                    "saturation":SATURATION,
+                                                                    "hue":HUE},
+                                                    spatial_transform= {'vertical_flip': VERTICLE_FLIP,
+                                                                        'resize': RESIZE,
+                                                                        'center_crop': CENTER_CROP,
+                                                                        'rotation': RANDOMROTATION
+                                                                        },
+                                                    normalize= {'mean': NORMALIZE_MEAN,
+                                                                'std': NORMALIZE_STD},
+                                                    data_loader_params={'batch_size': self.params.BATCH_SIZE,
+                                                                        'shuffle': self.params.SHUFFLE,
+                                                                        'num_workers': NUM_WORKERS,
+                                                                        'pin_memory': PIN_MEMORY,
+                                                                         })
+        return TransformationConfig
+
+
+
+
+    def get_training_config(self) -> TrainingConfig:
         
-        return data_transformation_configuration
-
-
-    def get_training_config(self) -> training_config:
         config = self.config.model_training
         create_directory([config.root_dir])
-        self.model_path = self.config.prepare_base_model.updated_base_model
-        Training_Config = training_config(root_dir= config.root_dir,
-                                            model_path= self.model_path,
-                                            epochs= self.params.EPOCHS,
-                                            batch_size= self.params.BATCH_SIZE,
-                                            learning_rate= self.params.LEARNING_RATE,
-                                            device=self.params.DEVICE
-                                            )
-
-
-        return Training_Config
+        model_config = self.config.prepare_base_model
+        TrainConfig = TrainingConfig(root_dir= config.root_dir,
+                                     loss_function=LOSS_FUNCTION(),
+                                     learning_rate= self.params.LEARNING_RATE,
+                                     epochs= self.params.EPOCHS,
+                                     device= self.params.DEVICE,
+                                     classes= self.params.CLASSES,
+                                     schedular_params= {"step_size": self.params.STEP_SIZE,
+                                                        "gamma": self.params.GAMMA},
+                                     bentoml_model_name= "food_classification_model",
+                                     train_transform_key= "TRAIN_TRANSFORM_KEY")
+        
+        return TrainConfig
 

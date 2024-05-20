@@ -17,4 +17,5 @@ Flask
 Flask-Cors
 gdown
 tensorboard
+bentoml
 -e .

@@ -1,94 +1,80 @@
-import os
+from Food_Classification.config.configuration import ConfigurationManager
+from Food_Classification.entity.config_entity import DataTransformConfig
+from torchvision import transforms
+from torch.utils.data import DataLoader
+from torchvision.datasets import ImageFolder
+from Food_Classification.entity.artifact_entity import DataTransformationArtifact
+from Food_Classification import logger
 from typing import Tuple
 import joblib
-from torch.utils.data import DataLoader, Dataset
-from torchvision.datasets import ImageFolder
-from torchvision.transforms import transforms
-from Food_Classification import logger
-from Food_Classification.entity.config_entity import data_transformation_config
-#from Food_Classification.config.configuration import ConfigurationManager
+import os
 
-class data_transformation:
-    def __init__(self, config: data_transformation_config):
+class DataTransformation:
+    def __init__(self,config: DataTransformConfig):
         self.config = config
 
-    def tranform_train_data(self) -> transforms.Compose:
-        try: 
-            logger.info("Transforming train data")
-            train_transform: transforms.Compose = transforms.Compose([transforms.Resize(self.config.spatial_transform['resize']),
+    def train_data_transform(self):
+        try:
+            logger.info("Data Transformation started")
+            train_transforms: transforms.Compose = transforms.Compose([transforms.Resize(self.config.spatial_transform['resize']),
                                                                       transforms.CenterCrop(self.config.spatial_transform['center_crop']),
                                                                       transforms.RandomRotation(self.config.spatial_transform['rotation']),
                                                                       transforms.RandomVerticalFlip(self.config.spatial_transform['vertical_flip']),
                                                                       transforms.ColorJitter(**self.config.color_transform),
                                                                       transforms.ToTensor(),
-                                                                      transforms.Normalize(**self.config.normalize_transform)])
-            
+                                                                      transforms.Normalize(**self.config.normalize)])
 
-            return train_transform
-        except Exception as e:
-            raise e
         
-    def test_transform(self) -> transforms.Compose:
-        try:
-            logger.info("Transforming test data")
-            test_transform: transforms.Compose = transforms.Compose([transforms.Resize(self.config.spatial_transform['resize']),
-                                                                      transforms.CenterCrop(self.config.spatial_transform['center_crop']),
-                                                                      transforms.ToTensor(),
-                                                                      transforms.Normalize(**self.config.normalize_transform)])
-
-            return test_transform
-        
-        except Exception as e:
-            raise e
-
-
-    def create_dataloaders(self, train_transform: transforms.Compose, test_transform: transforms.Compose) -> Tuple[DataLoader, DataLoader]:
-        try:
-            logger.info("creating_dataloaders")
-
-            train_data: Dataset = ImageFolder(root =self.config.train_dir, 
-                                              transform= train_transform)
-
-            test_data: Dataset = ImageFolder(root= self.config.test_dir, 
-                                             transform = test_transform)
-            
-            class_names: list = train_data.classes
-
-            train_dataloader: DataLoader = DataLoader(dataset= train_data,
-                                                      batch_size= self.config.batch_size,
-                                                      shuffle = self.config.shuffle,
-                                                      **self.config.data_loader_params)
-            
-            test_dataloader: DataLoader = DataLoader(dataset= test_data,
-                                                      batch_size= self.config.batch_size,
-                                                      shuffle = False,
-                                                      **self.config.data_loader_params)
-            
-            logger.info('DataLoaders created')
-            return train_dataloader, test_dataloader, class_names
-        
+            return train_transforms
         except Exception as e:
             raise e
     
-        
-    def initiate_data_transformation(self):
+    def test_data_transform(self):
         try:
-            logger.info("Initiating data transformation")
+            test_transforms: transforms.Compose = transforms.Compose([transforms.Resize(self.config.spatial_transform['resize']),
+                                                                    transforms.CenterCrop(self.config.spatial_transform['center_crop']),
+                                                                    transforms.ToTensor(),
+                                                                    transforms.Normalize(**self.config.normalize)])
 
-            train_transform: transforms.Compose = self.tranform_train_data()
+            return test_transforms
+        except Exception as e:
+            raise e
+    
 
-            test_transform: transforms.Compose = self.test_transform()
+    def create_dataloaders(self, train_data:transforms.Compose, test_data: transforms.Compose) -> Tuple[DataLoader, DataLoader]:
+        try:
+            logger.info("Data Loading started")
+            train_dataset = ImageFolder(root= self.config.train_dir,
+                                        transform=train_data)
+            
+            test_dataset = ImageFolder(root=self.config.test_dir,
+                                    transform=test_data)
+            
 
-            train_transform_filename = os.path.join(self.config.root_dir, "train_transforms.pkl")  # Create filename with path and extension
-            test_transform_filename = os.path.join(self.config.root_dir, "test_transforms.pkl")
+            train_dataloader = DataLoader(train_dataset, **self.config.data_loader_params)
 
-            joblib.dump(train_transform, train_transform_filename)
-            joblib.dump(test_transform, test_transform_filename)
+            test_dataloader = DataLoader(test_dataset, **self.config.data_loader_params)
 
+            return train_dataloader, test_dataloader
+        except Exception as e:
+            raise e
+    
+    def initiate_datatransfrom(self) -> DataTransformationArtifact:
+        try:
+            train_transforms: transforms.Compose = self.train_data_transform()
+            test_transforms: transforms.Compose = self.test_data_transform()
 
-            train_dataloader, test_dataloader, class_name = self.create_dataloaders(train_transform=train_transform, test_transform=test_transform)
+            joblib.dump(train_transforms, self.config.train_transforms_file)
+            joblib.dump(test_transforms, self.config.test_transforms_file)
+            logger.info("transform pickle file created")
 
-            return train_dataloader, test_dataloader, class_name
-        
+            train_dataloader, test_dataloader = self.create_dataloaders(train_transforms, test_transforms)
+
+            transforms_artifact: DataTransformationArtifact = DataTransformationArtifact(transformed_train_object= train_dataloader,
+                                                                                         transformed_test_object= test_dataloader,
+                                                                                         trained_transformed_file= self.config.train_transforms_file,
+                                                                                         test_transformed_file= self.config.test_transforms_file)
+            logger.info("Data Transformation completed")
+            return transforms_artifact
         except Exception as e:
             raise e
