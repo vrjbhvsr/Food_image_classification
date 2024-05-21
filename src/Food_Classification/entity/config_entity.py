@@ -19,6 +19,7 @@ class PrepareBasemodelConfig:
     params_device: str
     params_weight: str
     params_classes: int
+    p: float
     
 
 
@@ -29,6 +30,7 @@ class preparetensorboardconfig:
     experiment_name: str
     model_name:str
     epochs: int
+    
 
 
 
@@ -41,20 +43,10 @@ class DataTransformConfig:
     spatial_transform: dict
     data_loader_params: dict
     normalize: dict
+    blur: dict
+    affine: dict
     train_transforms_file: Path
     test_transforms_file: Path
-
-
-
-
-@dataclass
-class training_config:
-    root_dir: Path
-    model_path: Path
-    epochs: int
-    batch_size: int
-    learning_rate: float
-    device: str
 
 
 @dataclass

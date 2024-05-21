@@ -1,6 +1,6 @@
 from Food_Classification.constants import *
 from Food_Classification.utils.common import read_yaml,create_directory
-from Food_Classification.entity.config_entity import DataIngestionConfig, PrepareBasemodelConfig, TrainingConfig, DataTransformConfig, training_config
+from Food_Classification.entity.config_entity import DataIngestionConfig, PrepareBasemodelConfig, TrainingConfig, DataTransformConfig
 class ConfigurationManager:
     def __init__(self,
                  config_file_path = CONFIG_FILE_PATH,
@@ -37,7 +37,8 @@ class ConfigurationManager:
                                                         params_image_size=  params.IMAGE_SIZE,
                                                         params_device= params.DEVICE,
                                                         params_weight= params.WEIGHTS,
-                                                        params_classes= params.CLASSES
+                                                        params_classes= params.CLASSES,
+                                                        p= params.p
                                                         )
         
         return prepare_base_model_cofig
@@ -54,8 +55,14 @@ class ConfigurationManager:
         TransformationConfig = DataTransformConfig(root_dir= config.root_dir,
                                                    train_dir=Path(train_dir),
                                                    test_dir=Path(test_dir),
-                                                    train_transforms_file=train_transformed_file,
-                                                    test_transforms_file=test_transformed_file,
+                                                   train_transforms_file=train_transformed_file,
+                                                   test_transforms_file=test_transformed_file,
+                                                   blur= {"kernel_size": KERNEL_SIZE,
+                                                          "sigma": SIGMA},
+                                                   affine={"degrees": DEGREES,
+                                                           "translate":TRANSLATE,
+                                                           "scale": SCALE,
+                                                           "shear": SHEAR},
                                                    color_transform={"brightness":BRIGHTNESS,
                                                                     "contrast":CONTRAST,
                                                                     "saturation":SATURATION,
@@ -88,10 +95,13 @@ class ConfigurationManager:
                                      epochs= self.params.EPOCHS,
                                      device= self.params.DEVICE,
                                      classes= self.params.CLASSES,
-                                     schedular_params= {"step_size": self.params.STEP_SIZE,
-                                                        "gamma": self.params.GAMMA},
+                                     #schedular_params= {"step_size": self.params.STEP_SIZE,
+                                                        #"gamma": self.params.GAMMA},
+                                     schedular_params= {"mode": self.params.MODE,
+                                                        "factor":self.params.FACTOR,
+                                                        "patience": self.params.PATIENCE,
+                                                        "verbose": self.params.VERBOSE},
                                      bentoml_model_name= "food_classification_model",
                                      train_transform_key= "TRAIN_TRANSFORM_KEY")
         
         return TrainConfig
-

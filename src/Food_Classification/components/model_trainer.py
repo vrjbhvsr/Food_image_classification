@@ -6,7 +6,7 @@ from pathlib import Path
 from Food_Classification.entity.artifact_entity import DataTransformationArtifact, ModelTrainingArtifact
 from Food_Classification.entity.config_entity import TrainingConfig
 from tqdm import tqdm
-from torch.optim.lr_scheduler import StepLR, _LRScheduler
+from torch.optim.lr_scheduler import StepLR, _LRScheduler, ReduceLROnPlateau
 from Food_Classification import logger
 from Food_Classification.config.configuration import ConfigurationManager
 
@@ -91,6 +91,8 @@ class Model_Training:
 
             logger.info(f"Test_loss: {test_loss} | Test_accuracy: {test_accuracy}|")
             logger.info("Test step finished")
+
+            return test_loss,test_accuracy
         except Exception as e:
             raise e
 
@@ -99,18 +101,38 @@ class Model_Training:
         try:
             logger.info("Model training started")
             model: torch.nn.Module = self.model.to(self.config.device)
-            optimizer: torch.optim.Optimizer = torch.optim.Adam(model.parameters(),lr = self.config.learning_rate)
-            schedular: _LRScheduler = StepLR(optimizer=optimizer,
-                                             **self.config.schedular_params)
+            optimizer: torch.optim.Optimizer = torch.optim.Adam(model.parameters(),lr = self.config.learning_rate, weight_decay=1e-5)
+            #schedular: _LRScheduler = StepLR(optimizer=optimizer,
+            #                                 **self.config.schedular_params)
+
+            schedular: _LRScheduler = ReduceLROnPlateau(optimizer=optimizer, **self.config.schedular_params)
+            best_test_loss = float('inf')
+            patience = 5
+            epochs_no_improve = 0
+            early_stop = False
             
             for epoch in range(1,self.config.epochs+1):
                 logger.info(f"Epoch: {epoch}")
                 self.train_step(optimizer=optimizer)
                 optimizer.step()
-                schedular.step()
-                self.test_step()
+                test_loss,test_accuracy = self.test_step()
+                schedular.step(test_accuracy)
 
-            
+                if test_loss < best_test_loss:
+                    best_test_loss = test_loss
+                    epochs_no_improve = 0
+                    best_model = model.state_dict()
+                else:
+                    epochs_no_improve += 1
+
+                if epochs_no_improve >= patience:
+                    logger.info("Early Stopping")
+                    early_stop = True
+                    break
+
+            if early_stop:
+                model.load_state_dict(best_model)
+
             trained_model_path = os.path.join(self.config.root_dir, "trained_model.pth")
             torch.save(model, trained_model_path)
 

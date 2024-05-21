@@ -21,6 +21,9 @@ class DataTransformation:
                                                                       transforms.RandomRotation(self.config.spatial_transform['rotation']),
                                                                       transforms.RandomVerticalFlip(self.config.spatial_transform['vertical_flip']),
                                                                       transforms.ColorJitter(**self.config.color_transform),
+                                                                      transforms.RandomHorizontalFlip(),
+                                                                      #transforms.GaussianBlur(**self.config.blur),
+                                                                      transforms.RandomAffine(**self.config.affine),
                                                                       transforms.ToTensor(),
                                                                       transforms.Normalize(**self.config.normalize)])
 
