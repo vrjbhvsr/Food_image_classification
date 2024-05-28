@@ -101,13 +101,13 @@ class Model_Training:
         try:
             logger.info("Model training started")
             model: torch.nn.Module = self.model.to(self.config.device)
-            optimizer: torch.optim.Optimizer = torch.optim.Adam(model.parameters(),lr = self.config.learning_rate, weight_decay=1e-5)
+            optimizer: torch.optim.Optimizer = torch.optim.Adam(model.parameters(),lr = self.config.learning_rate, weight_decay=1e-2/self.config.epochs)
             #schedular: _LRScheduler = StepLR(optimizer=optimizer,
             #                                 **self.config.schedular_params)
 
             schedular: _LRScheduler = ReduceLROnPlateau(optimizer=optimizer, **self.config.schedular_params)
             best_test_loss = float('inf')
-            patience = 5
+            patience = 7
             epochs_no_improve = 0
             early_stop = False
             
@@ -116,7 +116,7 @@ class Model_Training:
                 self.train_step(optimizer=optimizer)
                 optimizer.step()
                 test_loss,test_accuracy = self.test_step()
-                schedular.step(test_accuracy)
+                schedular.step(test_loss)
 
                 if test_loss < best_test_loss:
                     best_test_loss = test_loss
@@ -146,7 +146,7 @@ class Model_Training:
             model_training_artifact: ModelTrainingArtifact = ModelTrainingArtifact(
                 trained_model_path= trained_model_path)
             
-            logger.info("MOdel training Complete")
+            logger.info("Model training Complete")
             return model_training_artifact
 
         except Exception as e:

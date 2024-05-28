@@ -1,5 +1,6 @@
 torch
 torchvision
+torchsummary
 pandas
 dvc
 notebook
@@ -18,4 +19,6 @@ Flask-Cors
 gdown
 tensorboard
 bentoml
+opencv-python
+scikit-learn
 -e .

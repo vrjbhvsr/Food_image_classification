@@ -29,5 +29,5 @@ DEGREES: int = 20
 TRANSLATE: Tuple[float] = (0.1,0.2)
 SCALE: Tuple[float] = (0.8,1.2)
 SHEAR: int = 20
-
+DEVICE: str = 'cuda'
 

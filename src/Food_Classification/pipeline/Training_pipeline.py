@@ -4,6 +4,7 @@ from Food_Classification.components.prepare_base_model import PrepareBaseModel
 from Food_Classification.config.configuration import ConfigurationManager
 from Food_Classification.components.model_trainer import Model_Training
 from Food_Classification.components.data_ingestion import DataIngestion
+from Food_Classification.components.Model_Evaluation import Model_Evaluation
 from Food_Classification import logger
 import torch
 
@@ -47,9 +48,20 @@ class TrainingPipeline:
         try:
             train_config = self.config.get_training_config()
             trainig = Model_Training(config=train_config, transformation_Artifacts=artifact)
-            trainig.initiate_Model_training()
+            training_artifacts = trainig.initiate_Model_training()
+            return training_artifacts
         except Exception as e:
             raise e
+        
+
+    def evaluationpipeline(self,training_artifact, transformation_artifact):
+        try:
+            evaluation_config = self.config.get_evaluation_config()
+            evaluation = Model_Evaluation(config=evaluation_config, training_artifact = training_artifact, transformation_artifact= transformation_artifact)
+            evaluation.initiate_model_evaluation()
+        except Exception as e:
+            raise e
+
 
 
 
@@ -69,7 +81,11 @@ class TrainingPipeline:
         logger.info(f"\n\n================================================================================\n stage : {STAGE_NAME} completed \n ===========================================================================================\n\n ")
         STAGE_NAME = "Model training"
         logger.info(f"\n\n================================================================================\n stage : {STAGE_NAME}\n ===========================================================================================\n\n ")
-        self.trainingpipeline(artifact=artifact)
+        training_artifact = self.trainingpipeline(artifact=artifact)
+        logger.info(f"\n\n================================================================================\n stage : {STAGE_NAME} completed \n ===========================================================================================\n\n ")
+        STAGE_NAME = "Model Evaluation"
+        logger.info(f"\n\n================================================================================\n stage : {STAGE_NAME}\n ===========================================================================================\n\n ")
+        self.evaluationpipeline(transformation_artifact=artifact, training_artifact=training_artifact)
         logger.info(f"\n\n================================================================================\n stage : {STAGE_NAME} completed \n ===========================================================================================\n\n ")
 
 

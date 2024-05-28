@@ -60,3 +60,9 @@ class TrainingConfig:
     schedular_params: dict
     bentoml_model_name: str
     train_transform_key: str
+
+
+@dataclass
+class EvaluationConfig:
+    loss_function: torch.nn.Module
+    device: str

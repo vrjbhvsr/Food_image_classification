@@ -1,6 +1,6 @@
 from Food_Classification.constants import *
 from Food_Classification.utils.common import read_yaml,create_directory
-from Food_Classification.entity.config_entity import DataIngestionConfig, PrepareBasemodelConfig, TrainingConfig, DataTransformConfig
+from Food_Classification.entity.config_entity import DataIngestionConfig, PrepareBasemodelConfig, TrainingConfig, DataTransformConfig, EvaluationConfig
 class ConfigurationManager:
     def __init__(self,
                  config_file_path = CONFIG_FILE_PATH,
@@ -105,3 +105,11 @@ class ConfigurationManager:
                                      train_transform_key= "TRAIN_TRANSFORM_KEY")
         
         return TrainConfig
+
+
+    def get_evaluation_config(self) -> EvaluationConfig:
+        Eval_Config = EvaluationConfig(loss_function = LOSS_FUNCTION(),
+                                        device= self.params.DEVICE)
+        
+        return Eval_Config
+

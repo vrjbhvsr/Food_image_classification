@@ -28,3 +28,5 @@ data_transforms:
 
 model_training:
   root_dir: artifacts/model_training
+
+
