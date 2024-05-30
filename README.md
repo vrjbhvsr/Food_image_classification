@@ -58,7 +58,7 @@ The Food-101 dataset is consist of 101 different classes and 1000 images which i
   pip install -r requirements.txt
 ```
 
-**3.** Run the scripts in the src/ directory to preprocess data, train models, and evaluate performance. 
+**3.** Run the scripts in the `src/Food_Classification/` directory to preprocess data, train models, and evaluate performance. 
 
 **4.** Run the `app.py` to start the Flask Web server, and the application should be accessible at specified address (usually http://localhost:5000/ by default).
 ## Tech Stack
