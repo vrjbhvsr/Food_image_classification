@@ -66,3 +66,11 @@ class TrainingConfig:
 class EvaluationConfig:
     loss_function: torch.nn.Module
     device: str
+
+
+@dataclass
+class ModelPusherConfig:
+    bentoml_model_name: str
+    bentoml_service_name: str
+    train_transform_key: str
+    bentoml_ecr_image: str

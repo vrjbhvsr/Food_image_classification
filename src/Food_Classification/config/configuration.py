@@ -1,6 +1,6 @@
 from Food_Classification.constants import *
 from Food_Classification.utils.common import read_yaml,create_directory
-from Food_Classification.entity.config_entity import DataIngestionConfig, PrepareBasemodelConfig, TrainingConfig, DataTransformConfig, EvaluationConfig
+from Food_Classification.entity.config_entity import DataIngestionConfig, PrepareBasemodelConfig, TrainingConfig, DataTransformConfig, EvaluationConfig, ModelPusherConfig
 class ConfigurationManager:
     def __init__(self,
                  config_file_path = CONFIG_FILE_PATH,
@@ -112,4 +112,13 @@ class ConfigurationManager:
                                         device= self.params.DEVICE)
         
         return Eval_Config
+    
+    def get_model_pusher_config(self) -> ModelPusherConfig:
+        PusherConfig = ModelPusherConfig(bentoml_model_name=BENTOML_MODEL_NAME,
+                                          bentoml_service_name=BENTOML_SERVICE_NAME,
+                                          train_transform_key=TRAIN_TRANSFORM_KEY,
+                                          bentoml_ecr_image=BENTOML_ECR_URI)
+         
+        return PusherConfig
+         
 

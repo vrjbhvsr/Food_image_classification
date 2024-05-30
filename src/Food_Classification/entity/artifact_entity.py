@@ -16,3 +16,8 @@ class ModelTrainingArtifact:
 @dataclass
 class ModelEvaluationArtifact:
     Model_accuracy: float
+
+@dataclass
+class modelPusherArtifact:
+    bentoml_model_name: str
+    bentoml_service_name: str

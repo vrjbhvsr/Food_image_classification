@@ -31,3 +31,29 @@ SCALE: Tuple[float] = (0.8,1.2)
 SHEAR: int = 20
 DEVICE: str = 'cuda'
 
+TRAIN_TRANSFORM_KEY: str = "TRAIN_TRANSFORM_KEY"
+
+BENTOML_MODEL_NAME: str = 'food_classification_model'
+
+BENTOML_SERVICE_NAME: str = 'food_classification_service'
+
+BENTOML_ECR_URI: str = 'food_classification-097'
+
+PREDICTION_LABEL: dict = {0: 'beet_salad',
+ 1: 'bruschetta',
+ 2: 'cheesecake',3: 'chocolate_cake',4: 'fried_rice',
+ 5: 'frozen_yogurt',
+ 6: 'garlic_bread',
+ 7: 'gnocchi',
+ 8: 'grilled_cheese_sandwich',
+ 9: 'macaroni_and_cheese',
+ 10: 'nachos',
+ 11: 'pancakes',
+ 12: 'ravioli',
+ 13: 'samosa',
+ 14: 'spring_rolls',
+ 15: 'strawberry_shortcake',
+ 16: 'tacos',
+ 17: 'takoyaki',
+ 18: 'tiramisu',
+ 19: 'waffles'}

@@ -5,6 +5,7 @@ from Food_Classification.config.configuration import ConfigurationManager
 from Food_Classification.components.model_trainer import Model_Training
 from Food_Classification.components.data_ingestion import DataIngestion
 from Food_Classification.components.Model_Evaluation import Model_Evaluation
+from Food_Classification.components.model_pusher import ModelPusher
 from Food_Classification import logger
 import torch
 
@@ -61,6 +62,14 @@ class TrainingPipeline:
             evaluation.initiate_model_evaluation()
         except Exception as e:
             raise e
+        
+    def ModelPusherPipeline(self):
+        try:
+            PusherConfig = self.config.get_model_pusher_config()
+            Pushing = ModelPusher(model_pusher_config=PusherConfig)
+            Pushing.initiate_model_pusher()
+        except Exception as e:
+            raise e
 
 
 
@@ -87,9 +96,10 @@ class TrainingPipeline:
         logger.info(f"\n\n================================================================================\n stage : {STAGE_NAME}\n ===========================================================================================\n\n ")
         self.evaluationpipeline(transformation_artifact=artifact, training_artifact=training_artifact)
         logger.info(f"\n\n================================================================================\n stage : {STAGE_NAME} completed \n ===========================================================================================\n\n ")
+        STAGE_NAME = "Model Pusher"
+        logger.info(f"\n\n================================================================================\n stage : {STAGE_NAME}\n ===========================================================================================\n\n ")
+        self.ModelPusherPipeline()
+        logger.info(f"\n\n================================================================================\n stage : {STAGE_NAME} completed \n ===========================================================================================\n\n ")
 
 
 
-if __name__ == "__main__":
-    training = TrainingPipeline(ConfigurationManager)
-    training.initiatePipeline()
